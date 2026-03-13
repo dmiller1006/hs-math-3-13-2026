@@ -358,7 +358,24 @@ function handleCircleTap(e) {
     }
   }
 
+  var filling = !circle.classList.contains('filled');
   circle.classList.toggle('filled');
+  playTapSound(filling);
+}
+
+function playTapSound(filling) {
+  var ctx = getAudioCtx();
+  var now = ctx.currentTime;
+  var osc = ctx.createOscillator();
+  var gain = ctx.createGain();
+  osc.type = 'sine';
+  osc.frequency.value = filling ? 880 : 440;
+  gain.gain.setValueAtTime(0.1, now);
+  gain.gain.exponentialRampToValueAtTime(0.001, now + 0.08);
+  osc.connect(gain);
+  gain.connect(ctx.destination);
+  osc.start(now);
+  osc.stop(now + 0.08);
 }
 
 function resetCircles() {
