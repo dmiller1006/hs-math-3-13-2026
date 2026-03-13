@@ -1,7 +1,7 @@
 {
-  "name": "Color Circles to Match",
-  "short_name": "Circles",
-  "start_url": "/hs-math-3-13-2026/",
+  "name": "HS Math",
+  "short_name": "HS Math",
+  "start_url": "/hs-math/",
   "display": "standalone",
   "background_color": "#f5f0e0",
   "theme_color": "#2e7d32"
