@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="manifest" href="manifest.json">
-<title>Addition</title>
+<title>Simple Math</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -39,8 +39,34 @@
   h1 {
     color: #2e7d32;
     font-size: 28px;
-    margin-bottom: 8px;
+    margin-bottom: 12px;
     text-align: center;
+  }
+
+  .mode-selector {
+    display: flex;
+    gap: 0;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  }
+
+  .mode-btn {
+    font-size: 18px;
+    font-weight: 600;
+    padding: 12px 24px;
+    border: none;
+    background: #fff;
+    color: #555;
+    cursor: pointer;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+    transition: background 0.15s, color 0.15s;
+  }
+  .mode-btn.active {
+    background: #2e7d32;
+    color: #fff;
   }
 
   .settings {
@@ -220,12 +246,18 @@
 
 <div class="nav"><a href="index.html">&larr; Menu</a></div>
 
-<h1>Addition</h1>
+<h1>Simple Math</h1>
+
+<div class="mode-selector">
+  <button class="mode-btn active" data-mode="addition" onclick="setMode('addition')">Addition</button>
+  <button class="mode-btn" data-mode="subtraction" onclick="setMode('subtraction')">Subtraction</button>
+  <button class="mode-btn" data-mode="all" onclick="setMode('all')">All</button>
+</div>
 
 <div class="settings">
   <label>
-    <input type="checkbox" id="allowLarger">
-    Add up to 5
+    <input type="checkbox" id="allowLargeSums">
+    Answers above 10
   </label>
 </div>
 
@@ -245,15 +277,25 @@
 <canvas class="confetti" id="confetti"></canvas>
 
 <script>
-var a = 0, b = 0, answer = '';
+var a = 0, b = 0, op = '+', answer = '';
 var totalCorrect = 0, totalProblems = 0;
 var answered = false, advancing = false;
-var maxAddend = 2;
+var mode = 'addition';
+var allowLarge = false;
 
-document.getElementById('allowLarger').addEventListener('change', function() {
-  maxAddend = this.checked ? 5 : 2;
+document.getElementById('allowLargeSums').addEventListener('change', function() {
+  allowLarge = this.checked;
   newProblem();
 });
+
+function setMode(m) {
+  mode = m;
+  var btns = document.querySelectorAll('.mode-btn');
+  for (var i = 0; i < btns.length; i++) {
+    btns[i].classList.toggle('active', btns[i].getAttribute('data-mode') === m);
+  }
+  newProblem();
+}
 
 function buildNumpad() {
   var pad = document.getElementById('numpad');
@@ -261,14 +303,36 @@ function buildNumpad() {
   for (var i = 0; i <= 9; i++) {
     html += '<button onclick="tapNumber(' + i + ')">' + i + '</button>';
   }
+  html += '<button class="backspace" onclick="backspace()">&larr;</button>';
   pad.innerHTML = html;
 }
 
+function pickOp() {
+  if (mode === 'addition') return '+';
+  if (mode === 'subtraction') return '\u2212';
+  return Math.random() < 0.5 ? '+' : '\u2212';
+}
+
 function newProblem() {
-  a = Math.floor(Math.random() * 10); // 0–9
-  b = Math.floor(Math.random() * (maxAddend + 1)); // 0–maxAddend
-  // Ensure at least one operand >= 5 so sums are interesting
-  if (a < 5 && b < 2) a = 5 + Math.floor(Math.random() * 5);
+  op = pickOp();
+  if (op === '+') {
+    if (allowLarge) {
+      a = Math.floor(Math.random() * 10);
+      b = Math.floor(Math.random() * 10);
+    } else {
+      a = Math.floor(Math.random() * 10);
+      b = Math.floor(Math.random() * (Math.min(10 - a, 9) + 1));
+    }
+  } else {
+    if (allowLarge) {
+      var result = Math.floor(Math.random() * 10);
+      b = Math.floor(Math.random() * 10);
+      a = result + b;
+    } else {
+      a = Math.floor(Math.random() * 10);
+      b = Math.floor(Math.random() * (a + 1));
+    }
+  }
   answer = '';
   answered = false;
   advancing = false;
@@ -280,22 +344,28 @@ function newProblem() {
 
 function renderProblem() {
   var html = '<span class="problem-num">' + a + '</span>';
-  html += '<span class="problem-op">+</span>';
+  html += '<span class="problem-op">' + op + '</span>';
   html += '<span class="problem-num">' + b + '</span>';
   html += '<span class="problem-op">=</span>';
-  html += '<span class="answer-box' + (answer ? ' has-value' : '') + '" id="answerBox">' + answer + '</span>';
+  html += '<span class="answer-box' + (answer ? ' has-value' : '') + '">' + answer + '</span>';
   document.getElementById('problem').innerHTML = html;
 }
 
 function tapNumber(n) {
   if (advancing) return;
   playTapSound();
-  // Allow up to 2 digits
   if (answer.length >= 2) return;
   answer += '' + n;
-  // Don't allow leading zeros for multi-digit (but "0" alone is fine)
   if (answer.length === 2 && answer[0] === '0') answer = '' + n;
   renderProblem();
+}
+
+function backspace() {
+  if (advancing) return;
+  if (answer.length > 0) {
+    answer = answer.slice(0, -1);
+    renderProblem();
+  }
 }
 
 function clearAnswer() {
@@ -309,7 +379,7 @@ function clearAnswer() {
 function checkAnswer() {
   if (advancing) return;
   var fb = document.getElementById('feedback');
-  var correct = a + b;
+  var correct = op === '+' ? a + b : a - b;
   var userAnswer = parseInt(answer);
 
   if (answer === '') {
@@ -320,7 +390,7 @@ function checkAnswer() {
   }
 
   if (userAnswer === correct) {
-    fb.textContent = 'Correct! ' + a + ' + ' + b + ' = ' + correct;
+    fb.textContent = 'Correct! ' + a + ' ' + op + ' ' + b + ' = ' + correct;
     fb.className = 'feedback correct';
     if (!answered) {
       totalCorrect++;
@@ -332,7 +402,7 @@ function checkAnswer() {
     advancing = true;
     setTimeout(function() { newProblem(); }, 2000);
   } else {
-    fb.textContent = 'Not quite — try again!';
+    fb.textContent = 'Not quite \u2014 try again!';
     fb.className = 'feedback wrong';
     playWrongSound();
     if (!answered) {
@@ -352,7 +422,6 @@ function updateScore() {
   }
 }
 
-// Sound effects via Web Audio API
 var audioCtx = null;
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -408,7 +477,6 @@ function playWrongSound() {
   osc.stop(now + 0.3);
 }
 
-// Confetti animation
 function launchConfetti() {
   var canvas = document.getElementById('confetti');
   var ctx = canvas.getContext('2d');

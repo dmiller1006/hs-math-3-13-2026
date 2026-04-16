@@ -10,7 +10,7 @@ Interactive math exercises for young kids (iPad-optimized).
 
 ## Exercises
 - `counting-circles.html` — tap circles to match a number (10–30)
-- `addition.html` — single-digit addition with addends 0–2 (expandable to 0–5)
+- `simple-math.html` — addition & subtraction with single digits (modes: addition, subtraction, all)
 
 ## iPad / PWA notes
 - `apple-mobile-web-app-capable` meta tag alone does NOT work on modern iPadOS
