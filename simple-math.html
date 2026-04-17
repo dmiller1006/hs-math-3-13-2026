@@ -17,7 +17,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 20px;
+    padding: 12px 16px;
     -webkit-user-select: none;
     user-select: none;
     -webkit-touch-callout: none;
@@ -38,24 +38,31 @@
 
   h1 {
     color: #2e7d32;
-    font-size: 28px;
-    margin-bottom: 12px;
+    font-size: 24px;
+    margin-bottom: 8px;
     text-align: center;
+  }
+
+  .selectors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    justify-content: center;
+    margin-bottom: 10px;
   }
 
   .mode-selector {
     display: flex;
     gap: 0;
-    margin-bottom: 12px;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
   }
 
   .mode-btn {
-    font-size: 18px;
+    font-size: 17px;
     font-weight: 600;
-    padding: 12px 24px;
+    padding: 10px 18px;
     border: none;
     background: #fff;
     color: #555;
@@ -72,13 +79,13 @@
 
   .feedback {
     text-align: center;
-    font-size: 30px;
+    font-size: 26px;
     font-weight: 700;
-    min-height: 46px;
+    min-height: 36px;
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 10px;
+    margin-bottom: 6px;
   }
   .feedback.correct { color: #2e7d32; }
   .feedback.wrong { color: #c62828; }
@@ -86,9 +93,9 @@
   .problem-card {
     background: #fff;
     border-radius: 16px;
-    padding: 32px;
+    padding: 18px 24px;
     box-shadow: 0 2px 12px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -96,26 +103,26 @@
   }
 
   .problem-num {
-    font-size: 80px;
+    font-size: 68px;
     font-weight: 700;
     color: #333;
     line-height: 1;
   }
 
   .problem-op {
-    font-size: 60px;
+    font-size: 50px;
     font-weight: 700;
     color: #2e7d32;
-    margin: 0 10px;
+    margin: 0 8px;
     line-height: 1;
   }
 
   .answer-box {
-    font-size: 80px;
+    font-size: 68px;
     font-weight: 700;
     color: #1976d2;
-    min-width: 100px;
-    height: 100px;
+    min-width: 84px;
+    height: 84px;
     border: 4px dashed #aaa;
     border-radius: 12px;
     display: flex;
@@ -131,16 +138,16 @@
   .numpad {
     display: grid;
     grid-template-columns: repeat(5, 1fr);
-    gap: 10px;
+    gap: 8px;
     width: 100%;
     max-width: 400px;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 
   .numpad button {
-    font-size: 36px;
+    font-size: 32px;
     font-weight: 700;
-    padding: 16px 0;
+    padding: 11px 0;
     border: none;
     border-radius: 12px;
     background: #fff;
@@ -164,16 +171,16 @@
 
   .buttons {
     display: flex;
-    gap: 14px;
+    gap: 10px;
     justify-content: center;
     flex-wrap: wrap;
-    margin-bottom: 16px;
+    margin-bottom: 10px;
   }
 
   .buttons button {
-    font-size: 22px;
+    font-size: 20px;
     font-weight: 600;
-    padding: 14px 36px;
+    padding: 11px 28px;
     border: none;
     border-radius: 12px;
     cursor: pointer;
@@ -225,16 +232,17 @@
 
 <h1>Simple Math</h1>
 
-<div class="mode-selector">
-  <button class="mode-btn active" data-mode="addition" onclick="setMode('addition')">Addition</button>
-  <button class="mode-btn" data-mode="subtraction" onclick="setMode('subtraction')">Subtraction</button>
-  <button class="mode-btn" data-mode="all" onclick="setMode('all')">All</button>
-</div>
-
-<div class="mode-selector">
-  <button class="mode-btn diff-btn active" data-diff="easy" onclick="setDifficulty('easy')">Easy</button>
-  <button class="mode-btn diff-btn" data-diff="medium" onclick="setDifficulty('medium')">Medium</button>
-  <button class="mode-btn diff-btn" data-diff="hard" onclick="setDifficulty('hard')">Hard</button>
+<div class="selectors">
+  <div class="mode-selector">
+    <button class="mode-btn active" data-mode="addition" onclick="setMode('addition')">Addition</button>
+    <button class="mode-btn" data-mode="subtraction" onclick="setMode('subtraction')">Subtraction</button>
+    <button class="mode-btn" data-mode="all" onclick="setMode('all')">All</button>
+  </div>
+  <div class="mode-selector">
+    <button class="mode-btn diff-btn active" data-diff="easy" onclick="setDifficulty('easy')">Easy</button>
+    <button class="mode-btn diff-btn" data-diff="medium" onclick="setDifficulty('medium')">Medium</button>
+    <button class="mode-btn diff-btn" data-diff="hard" onclick="setDifficulty('hard')">Hard</button>
+  </div>
 </div>
 
 <div class="feedback" id="feedback"></div>
